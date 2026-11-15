@@ -36,4 +36,3 @@ npm run test:visual
 ```
 
 Исходные медиафайлы можно повторно скачать командой `npm run assets:fetch`.
-

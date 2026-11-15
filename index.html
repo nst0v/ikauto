@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Покупка и доставка в любую точку РФ автомобилей из Китая Японии и Кореи"
+    />
+    <meta property="og:title" content="Автомобили под заказ" />
+    <meta
+      property="og:description"
+      content="Покупка и доставка в любую точку РФ автомобилей из Китая Японии и Кореи"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://a2cars.pro/" />
+    <meta property="og:image" content="/assets/og-image.png" />
+    <link rel="canonical" href="https://a2cars.pro/" />
+    <link rel="icon" href="/assets/favicon.png" type="image/png" />
+    <title>Автомобили под заказ</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Перейти к содержимому</a>
+
+    <svg class="svg-defs" aria-hidden="true">
+      <symbol id="icon-telegram" viewBox="0 0 24 24">
+        <path d="M21.7 3.1 18.6 20c-.2 1.2-.9 1.5-1.9.9l-4.7-3.5-2.3 2.2c-.2.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.4 13.9l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3.8c.8-.3 1.6.2 1.5-.7Z" />
+      </symbol>
+      <symbol id="icon-phone" viewBox="0 0 24 24">
+        <path d="M7.2 3.1c.5-.1 1 .2 1.2.7l1.5 3.5c.2.4.1.9-.2 1.2L8.2 10c1.1 2.4 3.1 4.4 5.5 5.6l1.6-1.6c.3-.3.8-.4 1.2-.2l3.4 1.5c.5.2.8.7.7 1.2l-.5 3.3c-.1.6-.6 1-1.2 1C10.2 20.8 3.2 13.8 3.2 5.2c0-.6.4-1.1 1-1.2l3-.9Z" />
+      </symbol>
+      <symbol id="icon-whatsapp" viewBox="0 0 24 24">
+        <path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a12 12 0 0 0 5.6 1.4c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.3-6.1-3.6-8.4Zm-8.3 18.2c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.7 9.7 0 1 1 8.5 4.7Zm5.3-7.2c-.3-.1-1.7-.8-2-1-.3-.1-.5-.1-.7.2l-1 1.2c-.2.2-.4.2-.7.1-1.8-.9-3.1-1.7-4.3-3.8-.3-.5.3-.5.8-1.6.1-.2 0-.5 0-.7l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.3 1.4 3.6c.1.2 2.4 3.7 5.9 5.2 2.2.9 3 .9 4.1.8.7-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4Z" />
+      </symbol>
+      <symbol id="icon-max" viewBox="0 0 24 24">
+        <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22Zm.1 5.3a5.7 5.7 0 0 1 5.5 5.7 5.6 5.6 0 0 1-5.6 5.7c-1.1 0-1.8-.2-2.7-.8-.6.8-2.4 1.4-2.5.3 0-.7-.2-1.4-.4-2.2-.2-.8-.5-1.7-.5-3a5.9 5.9 0 0 1 6.2-5.7Zm.1 2.8c-1.6-.1-2.8 1-3.1 2.7-.2 1.4.2 3 .5 3.1.2 0 .6-.3.8-.5.4.3.9.5 1.4.5a2.9 2.9 0 0 0 .4-5.8Z" />
+      </symbol>
+      <symbol id="icon-chat" viewBox="0 0 35 32">
+        <path d="M11.3 12.7h12.1m-12.1 3.8h12.1M4.8 23.6A12.3 12.3 0 0 1 1 14.8C1 7.2 8.4 1 17.5 1S34 7.2 34 14.8s-7.4 13.7-16.5 13.7c-1.9 0-3.7-.2-5.3-.7H12L5 31v-7.2l-.2-.2Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+      </symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24">
+        <path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" />
+      </symbol>
+    </svg>
+
+    <header class="desktop-nav" aria-label="Основная навигация">
+      <div class="desktop-nav__inner">
+        <nav>
+          <a href="#feedback">Отзывы клиентов</a>
+          <a href="#services">Сейчас в пути</a>
+          <a href="#contacts">Контакты</a>
+        </nav>
+        <div class="desktop-nav__socials" aria-label="Связаться с нами">
+          <a class="social-circle social-circle--dark" href="https://t.me/A2carspro" target="_blank" rel="noreferrer" aria-label="Telegram">
+            <svg><use href="#icon-telegram" /></svg>
+          </a>
+          <a class="social-circle social-circle--dark" href="https://wa.me/79043294986" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+            <svg><use href="#icon-whatsapp" /></svg>
+          </a>
+          <a class="social-circle social-circle--dark" href="https://max.ru/79043294986" target="_blank" rel="noreferrer" aria-label="Max">
+            <svg><use href="#icon-max" /></svg>
+          </a>
+          <a class="social-circle social-circle--dark" href="tel:+79043294986" aria-label="Позвонить">
+            <svg><use href="#icon-phone" /></svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <button class="mobile-menu-button" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Открыть меню">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-drawer-overlay" data-close-drawer></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+      <button class="mobile-drawer__close" type="button" data-close-drawer aria-label="Закрыть меню"></button>
+      <button class="mobile-drawer__logo" type="button" data-open-order aria-label="Открыть форму консультации">
+        <img src="/assets/logo-white.png" alt="А2авто" />
+      </button>
+      <nav>
+        <a href="#feedback" data-close-drawer>Отзывы клиентов</a>
+        <a href="#services" data-close-drawer>Сейчас в пути</a>
+        <a href="#contacts" data-close-drawer>Контакты</a>
+      </nav>
+      <div class="mobile-drawer__socials">
+        <a href="https://t.me/A2carspro" target="_blank" rel="noreferrer" aria-label="Telegram"><svg><use href="#icon-telegram" /></svg></a>
+        <a href="https://wa.me/79043294986" target="_blank" rel="noreferrer" aria-label="WhatsApp"><svg><use href="#icon-whatsapp" /></svg></a>
+        <a href="tel:+79043294986" aria-label="Позвонить"><svg><use href="#icon-phone" /></svg></a>
+      </div>
+    </aside>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__shade"></div>
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <h1 id="hero-title">
+              <span>Автомобили на заказ</span>
+              <span>из <span class="typed-country" aria-live="polite">Кореи</span><span class="typed-cursor" aria-hidden="true"></span></span>
+            </h1>
+            <p>Индивидуальный подбор и персонализация автомобилей для воплощения ваших мечтаний в реальность.</p>
+          </div>
+
+          <form class="hero-form lead-form" data-form-name="Тест-драйв">
+            <h2>Запишитесь на тест-драйв</h2>
+            <p>Проведем расчет стоимости и сроков доставки</p>
+            <label class="sr-only" for="hero-name">Имя</label>
+            <input id="hero-name" name="name" type="text" placeholder="Имя" autocomplete="name" required />
+            <label class="sr-only" for="hero-phone">Телефон</label>
+            <input id="hero-phone" name="phone" type="tel" placeholder="Телефон" autocomplete="tel" required />
+            <button type="submit">Хочу расчёт стоимости</button>
+            <p class="form-status" role="status"></p>
+          </form>
+        </div>
+      </section>
+
+      <div class="quiz-flow-spacer" aria-hidden="true"></div>
+
+      <section class="consultation-cta" aria-label="Консультация">
+        <button type="button" data-open-order>Консультация по автомобилю</button>
+      </section>
+
+      <section class="cars" id="services" aria-labelledby="cars-title">
+        <div class="section-container">
+          <h2 id="cars-title">Сейчас в пути</h2>
+          <p class="cars__lead">Эти автомобили идут под клиентов. Мы можем привезти Вам такие же либо любые другие машины.</p>
+
+          <div class="cars__grid">
+            <article class="car-card">
+              <div class="car-card__image">
+                <img src="/assets/suzuki-jimny-main.jpg" alt="Suzuki Jimny 2015 года" />
+                <img class="car-card__hover" src="/assets/suzuki-jimny-hover.jpg" alt="" aria-hidden="true" />
+              </div>
+              <h3>Suzuki Jimny 2015 г.в.</h3>
+              <p>0.7 л. Турбо. Бензин.<br />113 т км пробега, 3.5 балла.<br />730 000 рублей- под ключ до Омска.</p>
+            </article>
+
+            <article class="car-card car-card--spaced-description">
+              <div class="car-card__image">
+                <img src="/assets/toyota-chr-main.jpg" alt="Toyota CH-R 2019 года" />
+                <img class="car-card__hover" src="/assets/toyota-chr-hover.jpg" alt="" aria-hidden="true" />
+              </div>
+              <h3>Toyota CH-R 2019 г.в.</h3>
+              <p>1.2 л Бензин.<br />27 т км пробега, 4.5 балла.<br />2 150 000 рублей- под ключ до Омска. В пути.</p>
+            </article>
+
+            <article class="car-card">
+              <div class="car-card__image">
+                <img src="/assets/toyota-roomy-main.jpg" alt="Toyota Roomy 2021 года" />
+                <img class="car-card__hover" src="/assets/toyota-roomy-hover.jpg" alt="" aria-hidden="true" />
+              </div>
+              <h3>Toyota Roomy 2021 г.в.</h3>
+              <p>Toyota Roomy 2021 г.в.<br />1 л бензин.<br />78 т км пробега. 4 балла.<br />750 000 рублей- под ключ до Владивостока. В пути.</p>
+            </article>
+
+            <article class="car-card car-card--double-spaced-description">
+              <div class="car-card__image">
+                <img src="/assets/honda-stepwgn-main.jpg" alt="Honda Stepwgn 2015 года" />
+                <img class="car-card__hover" src="/assets/honda-stepwgn-hover.jpg" alt="" aria-hidden="true" />
+              </div>
+              <h3>Honda Stepwgn 2015 г.в.</h3>
+              <p>1.5 л. Турбо. Бензин.<br />217 т км пробега. 3 балла<br />1 000 000 рублей- под ключ до Владивостока. В пути.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" aria-labelledby="about-title">
+        <div class="about__shade"></div>
+        <div class="about__content">
+          <h2 id="about-title">О проекте</h2>
+          <span class="about__line" aria-hidden="true"></span>
+          <p>Мы занимаемся импортом автомобилей из Китая и Японии на заказ. Наша компания стремится предоставлять клиентам исключительные автомобили, сочетая в работе опыт в области дизайна и преданность удовлетворению потребностей заказчиков.</p>
+        </div>
+      </section>
+
+      <section class="features" aria-labelledby="features-title">
+        <div class="section-container">
+          <h2 id="features-title">Основные характеристики автомобилей под заказ</h2>
+          <ol class="features__grid">
+            <li>
+              <span class="features__number">1</span>
+              <div><h3>Качество</h3><p>Наши автомобили проходят строгий контроль качества на всех этапах производства.</p></div>
+            </li>
+            <li>
+              <span class="features__number">2</span>
+              <div><h3>Мастерство</h3><p>Каждый автомобиль собирается с учётом высоких стандартов мастерства и внимания к деталям.</p></div>
+            </li>
+            <li>
+              <span class="features__number">3</span>
+              <div><h3>Производительность</h3><p>Мы предлагаем модели с отличными техническими характеристиками и производительностью.</p></div>
+            </li>
+            <li>
+              <span class="features__number">4</span>
+              <div><h3>Индивидуальный подход</h3><p>Подбираем автомобиль, учитывая ваши пожелания и бюджет.</p></div>
+            </li>
+            <li>
+              <span class="features__number">5</span>
+              <div><h3>Широкий выбор</h3><p>У нас вы найдёте разнообразие моделей и марок для выбора.</p></div>
+            </li>
+            <li>
+              <span class="features__number">6</span>
+              <div><h3>Надёжность</h3><p>Мы сотрудничаем с проверенными производителями, гарантируя надёжность и долговечность каждого автомобиля.</p></div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="reviews" id="feedback" aria-labelledby="reviews-title">
+        <div class="section-container">
+          <h2 id="reviews-title">Отзывы наших клиентов</h2>
+          <div class="reviews__grid">
+            <iframe src="https://rutube.ru/embed/74a6468e3b9fc86db5322ea9773e422c" title="Отзыв клиента 1" loading="lazy" allow="clipboard-write; autoplay" allowfullscreen></iframe>
+            <iframe src="https://rutube.ru/embed/d8dff87e9b2739e3104b7a2f9e9e621d" title="Отзыв клиента 2" loading="lazy" allow="clipboard-write; autoplay" allowfullscreen></iframe>
+            <iframe src="https://rutube.ru/embed/a734786302cb4db3038984fb3dbe5da0" title="Отзыв клиента 3" loading="lazy" allow="clipboard-write; autoplay" allowfullscreen></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="contacts" id="contacts" aria-labelledby="contacts-title">
+        <div class="section-container">
+          <h2 id="contacts-title">Контактная информация</h2>
+          <div class="contacts__grid">
+            <div class="contacts__details">
+              <p class="contacts__company">OOO А2авто</p>
+              <p>г. Омск, ул. Кирова, д. 16, оф.3</p>
+              <a class="contacts__phone" href="tel:+79043294986">+79043294986</a>
+              <div class="contacts__socials">
+                <a href="https://t.me/A2carspro" target="_blank" rel="noreferrer" aria-label="Telegram"><svg><use href="#icon-telegram" /></svg></a>
+                <a href="https://wa.me/79043294986" target="_blank" rel="noreferrer" aria-label="WhatsApp"><svg><use href="#icon-whatsapp" /></svg></a>
+              </div>
+            </div>
+
+            <form class="contact-form lead-form" data-form-name="Контактная форма">
+              <label class="sr-only" for="contact-name">Имя</label>
+              <input id="contact-name" name="name" type="text" placeholder="Имя" autocomplete="name" required />
+              <label class="sr-only" for="contact-message">Сообщение</label>
+              <textarea id="contact-message" name="message" placeholder="Сообщение" required></textarea>
+              <label class="sr-only" for="contact-phone">Номер телефона</label>
+              <div class="phone-input">
+                <span class="phone-flag" aria-hidden="true"></span>
+                <span class="phone-prefix" aria-hidden="true">+7</span>
+                <input id="contact-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" required />
+              </div>
+              <button type="submit">Связаться</button>
+              <p class="form-status" role="status"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+      <div class="footer-spacer" aria-hidden="true"></div>
+    </main>
+
+    <div class="chat-widget">
+      <div class="chat-widget__links" aria-hidden="true">
+        <a class="chat-link chat-link--max" href="https://max.ru/79043294986" target="_blank" rel="noreferrer" aria-label="Max"><svg><use href="#icon-max" /></svg></a>
+        <a class="chat-link chat-link--whatsapp" href="https://wa.me/79043294986?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82.%20%D1%8F%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0" target="_blank" rel="noreferrer" aria-label="WhatsApp"><svg><use href="#icon-whatsapp" /></svg></a>
+        <a class="chat-link chat-link--phone" href="tel:+79043294986" aria-label="Позвонить"><svg><use href="#icon-phone" /></svg></a>
+        <a class="chat-link chat-link--telegram" href="https://t.me/A2carspro" target="_blank" rel="noreferrer" aria-label="Telegram"><svg><use href="#icon-telegram" /></svg></a>
+      </div>
+      <button class="chat-widget__toggle" type="button" aria-expanded="false" aria-label="Открыть способы связи">
+        <svg class="chat-widget__write"><use href="#icon-chat" /></svg>
+        <span class="chat-widget__close" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="modal" id="order-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="order-title">
+      <div class="modal__backdrop" data-close-modal></div>
+      <button class="modal__close modal__close--outer" type="button" data-close-modal aria-label="Закрыть"></button>
+      <section class="order-panel">
+        <h2 id="order-title">Заявка на консультацию</h2>
+        <p class="order-panel__subtitle">по автомобилю</p>
+        <form class="order-form lead-form" data-form-name="Консультация по автомобилю">
+          <label class="sr-only" for="order-name">Имя</label>
+          <input id="order-name" name="name" type="text" placeholder="Имя" autocomplete="name" required />
+          <label class="sr-only" for="order-phone">Номер телефона</label>
+          <div class="phone-input phone-input--outlined">
+            <span class="phone-flag" aria-hidden="true"></span>
+            <span class="phone-prefix" aria-hidden="true">+7</span>
+            <input id="order-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" required />
+          </div>
+          <label for="order-city">Город, населенный пункт</label>
+          <input id="order-city" name="city" type="text" placeholder="Ваш город проживания" required />
+          <label for="order-car">Марка модель автомобиля</label>
+          <input id="order-car" name="car" type="text" placeholder="Какой автомобиль интересует" required />
+          <div class="range-field">
+            <label for="order-budget">Примерный бюджет</label>
+            <p>Примерная сумма на автомобиль</p>
+            <output for="order-budget">1000000</output>
+            <input id="order-budget" name="budget" type="range" min="500000" max="5000000" step="100000" value="1000000" />
+            <div class="range-field__limits"><span>500000</span><span>5000000</span></div>
+          </div>
+          <button type="submit">Жду звонка</button>
+          <p class="form-status" role="status"></p>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal quiz-modal" id="quiz-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
+      <div class="modal__backdrop" data-close-modal></div>
+      <button class="modal__close modal__close--outer quiz-desktop-close" type="button" data-close-modal aria-label="Закрыть"></button>
+      <section class="quiz-panel">
+        <div class="quiz-progress"><span></span></div>
+        <header class="quiz-mobile-header">
+          <div><img src="/assets/discount.svg" alt="" /> <span>Скидка 50'000 рублей</span></div>
+          <button class="modal__close" type="button" data-close-modal aria-label="Закрыть"></button>
+        </header>
+
+        <form class="quiz-form lead-form" data-form-name="Квиз на скидку">
+          <div class="quiz-main">
+            <div class="quiz-step is-active" data-quiz-step="1">
+              <h2 id="quiz-title">Из какой страны предпочитаете автомобиль</h2>
+              <p class="quiz-step__subtitle">Страна экспорта</p>
+              <div class="quiz-options">
+                <label>
+                  <input type="radio" name="country" value="Корея" checked />
+                  <span class="quiz-option__check">✓</span>
+                  <img src="/assets/quiz-korea.png" alt="Автомобиль из Кореи" />
+                  <span>Корея</span>
+                </label>
+                <label>
+                  <input type="radio" name="country" value="Япония" />
+                  <span class="quiz-option__check">✓</span>
+                  <img src="/assets/quiz-japan.png" alt="Автомобиль из Японии" />
+                  <span>Япония</span>
+                </label>
+                <label>
+                  <input type="radio" name="country" value="Китай" />
+                  <span class="quiz-option__check">✓</span>
+                  <img src="/assets/quiz-china.png" alt="Автомобиль из Китая" />
+                  <span>Китай</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="quiz-step" data-quiz-step="2">
+              <h2>Какой бюджет на автомобиль планируете?</h2>
+              <div class="range-field range-field--quiz">
+                <output for="quiz-budget">1000000</output>
+                <input id="quiz-budget" name="budget" type="range" min="500000" max="6000000" step="100000" value="1000000" />
+                <div class="range-field__limits"><span>500000</span><span>6000000</span></div>
+              </div>
+            </div>
+
+            <div class="quiz-step" data-quiz-step="3">
+              <h2>Ваши контакты для связи</h2>
+              <label for="quiz-name">Имя</label>
+              <input id="quiz-name" name="name" type="text" placeholder="Иван Иванов" autocomplete="name" />
+              <label for="quiz-phone">Номер телефона</label>
+              <div class="phone-input">
+                <span class="phone-flag" aria-hidden="true"></span>
+                <span class="phone-prefix" aria-hidden="true">+7</span>
+                <input id="quiz-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" />
+              </div>
+            </div>
+
+            <footer class="quiz-footer">
+              <span class="quiz-footer__step">Шаг:<b>1/3</b></span>
+              <button class="quiz-prev" type="button" aria-label="Назад">←</button>
+              <button class="quiz-next" type="button">Далее <svg><use href="#icon-arrow" /></svg></button>
+              <button class="quiz-submit" type="submit">Свяжитесь со мной для получения скидки</button>
+            </footer>
+          </div>
+
+          <aside class="quiz-aside">
+            <div class="quiz-aside__discount"><img src="/assets/discount.svg" alt="" /><span>Скидка 50'000 рублей</span></div>
+            <div class="consultant-card">
+              <strong>Константин</strong>
+              <span>Начальник отдела логистики</span>
+              <p>Ответьте на 3 вопроса и мы дадим Вам скидку 50'000 рублей</p>
+            </div>
+            <p class="quiz-aside__note">Я пришлю Вам в мессенджер или перезвоню лично</p>
+          </aside>
+          <p class="form-status quiz-form-status" role="status"></p>
+        </form>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
