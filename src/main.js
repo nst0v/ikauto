@@ -3,6 +3,136 @@ const typedCountry = document.querySelector(".typed-country");
 
 const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 
+const PRIVACY_PREFERENCES_KEY = "ikautoPrivacyPreferences";
+const PRIVACY_PREFERENCES_VERSION = 1;
+const PERSONAL_DATA_CONSENT_VERSION = "1";
+
+function readPrivacyPreferences() {
+  try {
+    const storedPreferences = JSON.parse(localStorage.getItem(PRIVACY_PREFERENCES_KEY));
+    if (
+      storedPreferences?.version === PRIVACY_PREFERENCES_VERSION &&
+      storedPreferences.necessary === true &&
+      typeof storedPreferences.externalMedia === "boolean" &&
+      Date.parse(storedPreferences.expiresAt) > Date.now()
+    ) {
+      return storedPreferences;
+    }
+  } catch (error) {
+    console.warn("Не удалось прочитать настройки приватности.", error);
+  }
+
+  return null;
+}
+
+let privacyPreferences = readPrivacyPreferences();
+
+function setPrivacyElementVisibility(element, isVisible, openClass = "is-visible") {
+  if (!element) return;
+  element.hidden = !isVisible;
+  element.classList.toggle(openClass, isVisible);
+  element.setAttribute("aria-hidden", String(!isVisible));
+}
+
+function syncExternalMedia(externalMediaAllowed) {
+  document.querySelectorAll("iframe[data-external-media]").forEach((iframe) => {
+    const configuredSource = iframe.dataset.src;
+
+    if (externalMediaAllowed && configuredSource) {
+      if (iframe.getAttribute("src") !== configuredSource) iframe.setAttribute("src", configuredSource);
+      iframe.hidden = false;
+    } else {
+      const currentSource = iframe.getAttribute("src");
+      if (!configuredSource && currentSource) iframe.dataset.src = currentSource;
+      iframe.removeAttribute("src");
+      iframe.hidden = true;
+    }
+
+    const mediaContainer = iframe.closest("[data-external-media-container]") || iframe.parentElement;
+    const placeholder = mediaContainer?.querySelector("[data-external-media-placeholder]");
+    setPrivacyElementVisibility(placeholder, !externalMediaAllowed);
+  });
+}
+
+const privacyBanner = document.querySelector("[data-privacy-banner]");
+const privacySettings = document.querySelector("[data-privacy-settings]");
+const externalMediaSetting = privacySettings?.querySelector("[data-privacy-external-media]");
+
+function showPrivacyBanner(isVisible) {
+  setPrivacyElementVisibility(privacyBanner, isVisible);
+}
+
+function closePrivacySettings() {
+  setPrivacyElementVisibility(privacySettings, false, "is-open");
+  syncBodyLock();
+}
+
+function openPrivacySettings() {
+  if (!privacySettings) return;
+  if (externalMediaSetting) externalMediaSetting.checked = Boolean(privacyPreferences?.externalMedia);
+  setPrivacyElementVisibility(privacySettings, true, "is-open");
+  syncBodyLock();
+  window.setTimeout(() => externalMediaSetting?.focus({ preventScroll: true }), 40);
+}
+
+function savePrivacyPreferences(externalMedia) {
+  const updatedAt = new Date();
+  const expiresAt = new Date(updatedAt);
+  expiresAt.setUTCFullYear(expiresAt.getUTCFullYear() + 1);
+  privacyPreferences = {
+    version: PRIVACY_PREFERENCES_VERSION,
+    necessary: true,
+    externalMedia: Boolean(externalMedia),
+    updatedAt: updatedAt.toISOString(),
+    expiresAt: expiresAt.toISOString(),
+  };
+
+  try {
+    localStorage.setItem(PRIVACY_PREFERENCES_KEY, JSON.stringify(privacyPreferences));
+  } catch (error) {
+    console.warn("Не удалось сохранить настройки приватности.", error);
+  }
+
+  syncExternalMedia(privacyPreferences.externalMedia);
+  showPrivacyBanner(false);
+  closePrivacySettings();
+  window.dispatchEvent(
+    new CustomEvent("ikauto:privacy-preferences-changed", {
+      detail: { ...privacyPreferences },
+    }),
+  );
+}
+
+document.querySelectorAll("[data-privacy-accept-all]").forEach((button) => {
+  button.addEventListener("click", () => savePrivacyPreferences(true));
+});
+
+document.querySelectorAll("[data-privacy-reject-optional]").forEach((button) => {
+  button.addEventListener("click", () => savePrivacyPreferences(false));
+});
+
+document.querySelectorAll("[data-privacy-open-settings]").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    openPrivacySettings();
+  });
+});
+
+document.querySelectorAll("[data-privacy-save]").forEach((button) => {
+  button.addEventListener("click", () => savePrivacyPreferences(Boolean(externalMediaSetting?.checked)));
+});
+
+document.querySelectorAll("[data-privacy-close]").forEach((button) => {
+  button.addEventListener("click", closePrivacySettings);
+});
+
+document.querySelectorAll("[data-enable-external-media]").forEach((button) => {
+  button.addEventListener("click", () => savePrivacyPreferences(true));
+});
+
+syncExternalMedia(Boolean(privacyPreferences?.externalMedia));
+showPrivacyBanner(!privacyPreferences);
+
 async function runCountryTyping() {
   if (!typedCountry || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -33,7 +163,8 @@ const drawerOverlay = document.querySelector(".mobile-drawer-overlay");
 function syncBodyLock() {
   const hasOpenModal = Boolean(document.querySelector(".modal.is-open"));
   const hasOpenDrawer = drawer?.classList.contains("is-open");
-  document.body.classList.toggle("is-locked", hasOpenModal || hasOpenDrawer);
+  const hasOpenPrivacySettings = privacySettings?.classList.contains("is-open");
+  document.body.classList.toggle("is-locked", hasOpenModal || hasOpenDrawer || hasOpenPrivacySettings);
 }
 
 function openDrawer() {
@@ -117,7 +248,8 @@ document.querySelectorAll("[data-close-modal]").forEach((element) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
-    if (activeModal) closeModal();
+    if (privacySettings?.classList.contains("is-open")) closePrivacySettings();
+    else if (activeModal) closeModal();
     else if (drawer?.classList.contains("is-open")) closeDrawer();
     else if (chatWidget?.classList.contains("is-open")) chatToggle?.click();
   }
@@ -226,12 +358,42 @@ window.addEventListener(
 
 const formEndpoint = import.meta.env.VITE_FORM_ENDPOINT?.trim();
 
+function getPersonalDataConsent(form) {
+  return form.querySelector('[data-personal-data-consent], input[name="personalDataConsent"]');
+}
+
+function getFormStatus(form) {
+  return form.querySelector(".form-status") || document.querySelector(".quiz-form-status");
+}
+
+function validatePersonalDataConsent(form) {
+  const consent = getPersonalDataConsent(form);
+  const status = getFormStatus(form);
+
+  if (!(consent instanceof HTMLInputElement) || consent.type !== "checkbox") {
+    if (status) {
+      status.textContent = "Отправка недоступна: в форме отсутствует обязательное согласие на обработку персональных данных.";
+      status.classList.add("is-visible");
+    }
+    console.error("Lead form is missing a personal-data consent checkbox.", form);
+    return false;
+  }
+
+  consent.required = true;
+  consent.setCustomValidity(consent.checked ? "" : "Подтвердите согласие на обработку персональных данных.");
+  if (!consent.checked) consent.reportValidity();
+  return consent.checked;
+}
+
 async function submitLeadForm(form) {
-  const status = form.querySelector(".form-status") || document.querySelector(".quiz-form-status");
+  const status = getFormStatus(form);
   const submitButton = form.querySelector('button[type="submit"]');
   const originalText = submitButton?.textContent;
   const payload = Object.fromEntries(new FormData(form).entries());
   if (payload.phone && form.querySelector(".phone-prefix")) payload.phone = `+7 ${payload.phone}`;
+  payload.personalDataConsent = true;
+  payload.consentVersion = PERSONAL_DATA_CONSENT_VERSION;
+  payload.consentAt = new Date().toISOString();
   payload.form = form.dataset.formName || "Форма с сайта";
   payload.page = window.location.href;
 
@@ -252,9 +414,7 @@ async function submitLeadForm(form) {
         body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    } else {
-      await wait(450);
-    }
+    } else throw new Error("FORM_ENDPOINT_NOT_CONFIGURED");
 
     if (status) {
       status.textContent = "Спасибо! Заявка принята, мы свяжемся с вами.";
@@ -277,8 +437,15 @@ async function submitLeadForm(form) {
 }
 
 document.querySelectorAll(".lead-form").forEach((form) => {
+  const consent = getPersonalDataConsent(form);
+  if (consent instanceof HTMLInputElement && consent.type === "checkbox") {
+    consent.required = true;
+    consent.addEventListener("change", () => consent.setCustomValidity(""));
+  }
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    if (!validatePersonalDataConsent(form)) return;
     if (!form.reportValidity()) return;
     submitLeadForm(form);
   });

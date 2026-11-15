@@ -13,9 +13,9 @@
       content="Покупка и доставка в любую точку РФ автомобилей из Китая Японии и Кореи"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://a2cars.pro/" />
+    <meta property="og:url" content="https://ikauto.ru/" />
     <meta property="og:image" content="/assets/og-image.png" />
-    <link rel="canonical" href="https://a2cars.pro/" />
+    <link rel="canonical" href="https://ikauto.ru/" />
     <link rel="icon" href="/assets/favicon.png" type="image/png" />
     <title>Автомобили под заказ</title>
     <link rel="stylesheet" href="/src/style.css" />
@@ -48,7 +48,7 @@
       <div class="desktop-nav__inner">
         <nav>
           <a href="#feedback">Отзывы клиентов</a>
-          <a href="#services">Сейчас в пути</a>
+          <a href="#services">Автомобили</a>
           <a href="#contacts">Контакты</a>
         </nav>
         <div class="desktop-nav__socials" aria-label="Связаться с нами">
@@ -79,7 +79,7 @@
       </button>
       <nav>
         <a href="#feedback" data-close-drawer>Отзывы клиентов</a>
-        <a href="#services" data-close-drawer>Сейчас в пути</a>
+        <a href="#services" data-close-drawer>Автомобили</a>
         <a href="#contacts" data-close-drawer>Контакты</a>
       </nav>
       <div class="mobile-drawer__socials">
@@ -108,6 +108,10 @@
             <input id="hero-name" name="name" type="text" placeholder="Имя" autocomplete="name" required />
             <label class="sr-only" for="hero-phone">Телефон</label>
             <input id="hero-phone" name="phone" type="tel" placeholder="Телефон" autocomplete="tel" required />
+            <label class="form-consent" for="hero-consent">
+              <input id="hero-consent" name="personalDataConsent" value="granted" type="checkbox" required data-personal-data-consent />
+              <span>Я даю отдельное <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. Я ознакомился(ась) с <a href="/privacy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</span>
+            </label>
             <button type="submit">Хочу расчёт стоимости</button>
             <p class="form-status" role="status"></p>
           </form>
@@ -122,8 +126,8 @@
 
       <section class="cars" id="services" aria-labelledby="cars-title">
         <div class="section-container">
-          <h2 id="cars-title">Сейчас в пути</h2>
-          <p class="cars__lead">Эти автомобили идут под клиентов. Мы можем привезти Вам такие же либо любые другие машины.</p>
+          <h2 id="cars-title">Примеры автомобилей и расчётов</h2>
+          <p class="cars__lead">Показаны примеры ранее подобранных автомобилей. Наличие, состояние, курс валют, пошлины, стоимость и сроки рассчитываются заново на дату обращения.</p>
 
           <div class="cars__grid">
             <article class="car-card">
@@ -180,7 +184,7 @@
           <ol class="features__grid">
             <li>
               <span class="features__number">1</span>
-              <div><h3>Качество</h3><p>Наши автомобили проходят строгий контроль качества на всех этапах производства.</p></div>
+              <div><h3>Качество</h3><p>Перед покупкой мы организуем доступную проверку состояния автомобиля и передаём клиенту полученные результаты.</p></div>
             </li>
             <li>
               <span class="features__number">2</span>
@@ -200,7 +204,7 @@
             </li>
             <li>
               <span class="features__number">6</span>
-              <div><h3>Надёжность</h3><p>Мы сотрудничаем с проверенными производителями, гарантируя надёжность и долговечность каждого автомобиля.</p></div>
+              <div><h3>Надёжность</h3><p>Мы работаем с поставщиками и площадками, которых проверяем по доступным документам и истории взаимодействия.</p></div>
             </li>
           </ol>
         </div>
@@ -210,9 +214,30 @@
         <div class="section-container">
           <h2 id="reviews-title">Отзывы наших клиентов</h2>
           <div class="reviews__grid">
-            <iframe src="https://rutube.ru/embed/74a6468e3b9fc86db5322ea9773e422c" title="Отзыв клиента 1" loading="lazy" allow="clipboard-write; autoplay" allowfullscreen></iframe>
-            <iframe src="https://rutube.ru/embed/d8dff87e9b2739e3104b7a2f9e9e621d" title="Отзыв клиента 2" loading="lazy" allow="clipboard-write; autoplay" allowfullscreen></iframe>
-            <iframe src="https://rutube.ru/embed/a734786302cb4db3038984fb3dbe5da0" title="Отзыв клиента 3" loading="lazy" allow="clipboard-write; autoplay" allowfullscreen></iframe>
+            <div class="external-video">
+              <iframe data-external-media data-src="https://rutube.ru/embed/74a6468e3b9fc86db5322ea9773e422c" title="Отзыв клиента 1" loading="lazy" referrerpolicy="no-referrer" allow="clipboard-write; autoplay; fullscreen" allowfullscreen></iframe>
+              <div class="external-video__placeholder" data-external-media-placeholder>
+                <strong>Видео RUTUBE</strong>
+                <p>Внешнее видео загружается только с вашего разрешения.</p>
+                <button type="button" data-enable-external-media>Разрешить и показать видео</button>
+              </div>
+            </div>
+            <div class="external-video">
+              <iframe data-external-media data-src="https://rutube.ru/embed/d8dff87e9b2739e3104b7a2f9e9e621d" title="Отзыв клиента 2" loading="lazy" referrerpolicy="no-referrer" allow="clipboard-write; autoplay; fullscreen" allowfullscreen></iframe>
+              <div class="external-video__placeholder" data-external-media-placeholder>
+                <strong>Видео RUTUBE</strong>
+                <p>Внешнее видео загружается только с вашего разрешения.</p>
+                <button type="button" data-enable-external-media>Разрешить и показать видео</button>
+              </div>
+            </div>
+            <div class="external-video">
+              <iframe data-external-media data-src="https://rutube.ru/embed/a734786302cb4db3038984fb3dbe5da0" title="Отзыв клиента 3" loading="lazy" referrerpolicy="no-referrer" allow="clipboard-write; autoplay; fullscreen" allowfullscreen></iframe>
+              <div class="external-video__placeholder" data-external-media-placeholder>
+                <strong>Видео RUTUBE</strong>
+                <p>Внешнее видео загружается только с вашего разрешения.</p>
+                <button type="button" data-enable-external-media>Разрешить и показать видео</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -222,7 +247,7 @@
           <h2 id="contacts-title">Контактная информация</h2>
           <div class="contacts__grid">
             <div class="contacts__details">
-              <p class="contacts__company">OOO А2авто</p>
+              <p class="contacts__company">ООО «А2авто»</p>
               <p>г. Омск, ул. Кирова, д. 16, оф.3</p>
               <a class="contacts__phone" href="tel:+79043294986">+79043294986</a>
               <div class="contacts__socials">
@@ -242,14 +267,37 @@
                 <span class="phone-prefix" aria-hidden="true">+7</span>
                 <input id="contact-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" required />
               </div>
+              <p class="form-hint">Не указывайте в сообщении сведения о здоровье, документах и данные третьих лиц.</p>
+              <label class="form-consent" for="contact-consent">
+                <input id="contact-consent" name="personalDataConsent" value="granted" type="checkbox" required data-personal-data-consent />
+                <span>Я даю отдельное <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. Я ознакомился(ась) с <a href="/privacy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</span>
+              </label>
               <button type="submit">Связаться</button>
               <p class="form-status" role="status"></p>
             </form>
           </div>
         </div>
       </section>
-      <div class="footer-spacer" aria-hidden="true"></div>
     </main>
+
+    <footer class="site-footer">
+      <div class="section-container site-footer__grid">
+        <div>
+          <strong>А2авто</strong>
+          <p>ООО «А2авто»</p>
+          <p>г. Омск, ул. Кирова, д. 16, оф. 3</p>
+          <a href="tel:+79043294986">+7 904 329-49-86</a>
+        </div>
+        <nav aria-label="Правовая информация">
+          <a href="/privacy.html">Политика обработки персональных данных</a>
+          <a href="/consent.html">Согласие на обработку персональных данных</a>
+          <a href="/cookies.html">Cookie и похожие технологии</a>
+          <a href="/terms.html">Правовая информация и условия сайта</a>
+          <button type="button" data-privacy-open-settings>Настройки cookie и видео</button>
+        </nav>
+        <p class="site-footer__note">Цены и расчёты на сайте носят информационный характер и не являются публичной офертой. Итоговые условия фиксируются в договоре.</p>
+      </div>
+    </footer>
 
     <div class="chat-widget">
       <div class="chat-widget__links" aria-hidden="true">
@@ -290,6 +338,10 @@
             <input id="order-budget" name="budget" type="range" min="500000" max="5000000" step="100000" value="1000000" />
             <div class="range-field__limits"><span>500000</span><span>5000000</span></div>
           </div>
+          <label class="form-consent form-consent--dark" for="order-consent">
+            <input id="order-consent" name="personalDataConsent" value="granted" type="checkbox" required data-personal-data-consent />
+            <span>Я даю отдельное <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. Я ознакомился(ась) с <a href="/privacy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</span>
+          </label>
           <button type="submit">Жду звонка</button>
           <p class="form-status" role="status"></p>
         </form>
@@ -302,7 +354,7 @@
       <section class="quiz-panel">
         <div class="quiz-progress"><span></span></div>
         <header class="quiz-mobile-header">
-          <div><img src="/assets/discount.svg" alt="" /> <span>Скидка 50'000 рублей</span></div>
+          <div><img src="/assets/discount.svg" alt="" /> <span>Возможная скидка до 50 000 рублей</span></div>
           <button class="modal__close" type="button" data-close-modal aria-label="Закрыть"></button>
         </header>
 
@@ -345,13 +397,17 @@
             <div class="quiz-step" data-quiz-step="3">
               <h2>Ваши контакты для связи</h2>
               <label for="quiz-name">Имя</label>
-              <input id="quiz-name" name="name" type="text" placeholder="Иван Иванов" autocomplete="name" />
+              <input id="quiz-name" name="name" type="text" placeholder="Иван Иванов" autocomplete="name" required />
               <label for="quiz-phone">Номер телефона</label>
               <div class="phone-input">
                 <span class="phone-flag" aria-hidden="true"></span>
                 <span class="phone-prefix" aria-hidden="true">+7</span>
-                <input id="quiz-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" />
+                <input id="quiz-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" required />
               </div>
+              <label class="form-consent" for="quiz-consent">
+                <input id="quiz-consent" name="personalDataConsent" value="granted" type="checkbox" required data-personal-data-consent />
+                <span>Я даю отдельное <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. Я ознакомился(ась) с <a href="/privacy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</span>
+              </label>
             </div>
 
             <footer class="quiz-footer">
@@ -363,16 +419,48 @@
           </div>
 
           <aside class="quiz-aside">
-            <div class="quiz-aside__discount"><img src="/assets/discount.svg" alt="" /><span>Скидка 50'000 рублей</span></div>
+            <div class="quiz-aside__discount"><img src="/assets/discount.svg" alt="" /><span>Возможная скидка до 50 000 рублей</span></div>
             <div class="consultant-card">
               <strong>Константин</strong>
               <span>Начальник отдела логистики</span>
-              <p>Ответьте на 3 вопроса и мы дадим Вам скидку 50'000 рублей</p>
+              <p>Ответьте на 3 вопроса, и менеджер проверит возможность скидки до 50 000 рублей. Итоговые условия фиксируются в договоре.</p>
             </div>
             <p class="quiz-aside__note">Я пришлю Вам в мессенджер или перезвоню лично</p>
           </aside>
           <p class="form-status quiz-form-status" role="status"></p>
         </form>
+      </section>
+    </div>
+
+    <aside class="privacy-banner" data-privacy-banner hidden aria-label="Настройки конфиденциальности">
+      <div>
+        <strong>Cookie и внешние видео</strong>
+        <p>Сайт использует обязательное локальное хранилище для работы интерфейса. Видео RUTUBE загружаются только с вашего согласия. Подробнее — в <a href="/cookies.html">политике cookie</a>.</p>
+      </div>
+      <div class="privacy-banner__actions">
+        <button type="button" class="button-secondary" data-privacy-reject-optional>Только необходимые</button>
+        <button type="button" class="button-secondary" data-privacy-open-settings>Настроить</button>
+        <button type="button" data-privacy-accept-all>Принять все</button>
+      </div>
+    </aside>
+
+    <div class="privacy-settings" data-privacy-settings hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="privacy-settings-title">
+      <button class="privacy-settings__backdrop" type="button" data-privacy-close aria-label="Закрыть настройки"></button>
+      <section class="privacy-settings__panel">
+        <button class="privacy-settings__close" type="button" data-privacy-close aria-label="Закрыть">×</button>
+        <h2 id="privacy-settings-title">Настройки конфиденциальности</h2>
+        <div class="privacy-option">
+          <div><strong>Необходимые технологии</strong><p>Нужны для сохранения выбора и корректной работы квиза. Всегда включены.</p></div>
+          <span>Всегда включены</span>
+        </div>
+        <label class="privacy-option privacy-option--switch">
+          <div><strong>Внешние видео RUTUBE</strong><p>При включении браузер подключается к RUTUBE, который может обрабатывать технические данные и использовать cookie.</p></div>
+          <input type="checkbox" data-privacy-external-media />
+        </label>
+        <div class="privacy-settings__actions">
+          <button type="button" class="button-secondary" data-privacy-close>Отмена</button>
+          <button type="button" data-privacy-save>Сохранить выбор</button>
+        </div>
       </section>
     </div>
 

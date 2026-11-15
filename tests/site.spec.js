@@ -1,6 +1,21 @@
 import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }, testInfo) => {
+  await page.addInitScript(() => {
+    const updatedAt = new Date();
+    const expiresAt = new Date(updatedAt);
+    expiresAt.setUTCFullYear(expiresAt.getUTCFullYear() + 1);
+    localStorage.setItem(
+      "ikautoPrivacyPreferences",
+      JSON.stringify({
+        version: 1,
+        necessary: true,
+        externalMedia: false,
+        updatedAt: updatedAt.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+      }),
+    );
+  });
   if (!testInfo.title.includes("quiz")) {
     await page.addInitScript(() => sessionStorage.setItem("a2carsQuizShown", "true"));
   }
@@ -9,7 +24,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test("renders every main section and the original contacts", async ({ page }) => {
   await expect(page).toHaveTitle("Автомобили под заказ");
-  await expect(page.getByRole("heading", { name: "Сейчас в пути" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Примеры автомобилей и расчётов" })).toBeVisible();
   await expect(page.locator(".car-card")).toHaveCount(4);
   await expect(page.getByRole("heading", { name: "О проекте" })).toBeAttached();
   await expect(page.locator(".reviews iframe")).toHaveCount(3);
@@ -47,12 +62,18 @@ test("quiz advances through all three steps", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Ваши контакты для связи" })).toBeVisible();
 });
 
-test("lead form validates and confirms a local submission", async ({ page }) => {
+test("lead form requires consent and reports an unavailable endpoint truthfully", async ({ page }) => {
   const form = page.locator(".hero-form");
   await form.getByPlaceholder("Имя").fill("Иван");
   await form.getByPlaceholder("Телефон").fill("+79040000000");
+  const consent = form.locator("[data-personal-data-consent]");
+  await expect(consent).not.toBeChecked();
   await form.getByRole("button", { name: "Хочу расчёт стоимости" }).click();
-  await expect(form.getByRole("status")).toContainText("Заявка принята");
+  expect(await consent.evaluate((input) => input.validity.valid)).toBe(false);
+
+  await consent.check();
+  await form.getByRole("button", { name: "Хочу расчёт стоимости" }).click();
+  await expect(form.getByRole("status")).toContainText("+7 904 329-49-86");
 });
 
 test("mobile layouts have no horizontal overflow", async ({ page }) => {
