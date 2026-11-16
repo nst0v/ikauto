@@ -88,6 +88,17 @@ p {
   border: 0 !important;
 }
 
+.form-trap {
+  position: fixed !important;
+  top: 0 !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .skip-link {
   position: fixed;
   top: 10px;
@@ -896,6 +907,30 @@ p {
 
 .chat-widget.is-open .chat-widget__write { display: none; }
 .chat-widget.is-open .chat-widget__close { display: block; }
+
+.contact-toast {
+  position: fixed;
+  right: 40px;
+  bottom: 130px;
+  z-index: 500;
+  width: min(360px, calc(100% - 40px));
+  padding: 13px 16px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  background: #111;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 24%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.contact-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .modal {
   position: fixed;
@@ -1916,7 +1951,8 @@ input[type="range"]::-moz-range-thumb {
   }
 
   .contacts__details {
-    height: 232px;
+    height: auto;
+    margin-bottom: 42px;
     text-align: center;
     font-size: 18px;
   }
@@ -1962,6 +1998,12 @@ input[type="range"]::-moz-range-thumb {
   .chat-widget {
     right: 10px;
     bottom: 10px;
+  }
+
+  .contact-toast {
+    right: 10px;
+    bottom: 82px;
+    width: min(360px, calc(100% - 20px));
   }
 
   .modal__close--outer {

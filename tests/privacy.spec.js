@@ -109,7 +109,8 @@ test("every lead form has an unchecked required personal-data consent", async ({
 test("legal documents and footer are available", async ({ page }) => {
   await page.goto("/");
   const footer = page.locator(".site-footer");
-  await expect(footer).toContainText("ООО «А2авто»");
+  await expect(footer).toContainText("Бова Алина Викторовна");
+  await expect(footer).toContainText("ИНН 550601084970");
   await expect(footer.getByRole("link", { name: "Политика обработки персональных данных" })).toHaveAttribute(
     "href",
     "/privacy.html",

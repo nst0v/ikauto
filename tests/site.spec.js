@@ -47,8 +47,19 @@ test("mobile drawer contains navigation and contact links", async ({ page }) => 
   await expect(drawer).toHaveClass(/is-open/);
   await expect(drawer.getByRole("link", { name: "Отзывы клиентов" })).toBeVisible();
   await expect(drawer.getByRole("link", { name: "Telegram" })).toHaveAttribute("href", "https://t.me/A2carspro");
+  await expect(drawer.locator("[data-max-contact]")).toHaveAttribute("href", "https://max.ru/");
   await drawer.getByRole("button", { name: "Закрыть меню" }).click();
   await expect(drawer).not.toHaveClass(/is-open/);
+});
+
+test("MAX and Telegram contacts are available in every contact area", async ({ page }) => {
+  const maxLinks = page.locator("[data-max-contact]");
+  await expect(maxLinks).toHaveCount(4);
+  for (let index = 0; index < 4; index += 1) {
+    await expect(maxLinks.nth(index)).toHaveAttribute("href", "https://max.ru/");
+  }
+
+  await expect(page.locator('a[href="https://t.me/A2carspro"]')).toHaveCount(4);
 });
 
 test("quiz advances through all three steps", async ({ page }) => {
@@ -62,7 +73,17 @@ test("quiz advances through all three steps", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Ваши контакты для связи" })).toBeVisible();
 });
 
-test("lead form requires consent and reports an unavailable endpoint truthfully", async ({ page }) => {
+test("lead form requires consent and sends the application to the mail endpoint", async ({ page }) => {
+  let leadPayload;
+  await page.route("**/api/lead.php", async (route) => {
+    leadPayload = route.request().postDataJSON();
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true }),
+    });
+  });
+
   const form = page.locator(".hero-form");
   await form.getByPlaceholder("Имя").fill("Иван");
   await form.getByPlaceholder("Телефон").fill("+79040000000");
@@ -72,6 +93,29 @@ test("lead form requires consent and reports an unavailable endpoint truthfully"
   expect(await consent.evaluate((input) => input.validity.valid)).toBe(false);
 
   await consent.check();
+  await form.getByRole("button", { name: "Хочу расчёт стоимости" }).click();
+  await expect(form.getByRole("status")).toContainText("Спасибо! Заявка принята");
+  expect(leadPayload).toMatchObject({
+    form: "Тест-драйв",
+    name: "Иван",
+    phone: "+79040000000",
+    personalDataConsent: true,
+    consentVersion: "2",
+    website: "",
+  });
+  expect(leadPayload.consentAt).toBeTruthy();
+  expect(leadPayload.page).toContain("127.0.0.1:4173");
+});
+
+test("lead form reports a mail endpoint failure truthfully", async ({ page }) => {
+  await page.route("**/api/lead.php", (route) =>
+    route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ ok: false }) }),
+  );
+
+  const form = page.locator(".hero-form");
+  await form.getByPlaceholder("Имя").fill("Иван");
+  await form.getByPlaceholder("Телефон").fill("+79040000000");
+  await form.locator("[data-personal-data-consent]").check();
   await form.getByRole("button", { name: "Хочу расчёт стоимости" }).click();
   await expect(form.getByRole("status")).toContainText("+7 904 329-49-86");
 });
@@ -106,6 +150,7 @@ test("mobile consultation and chat controls work at 320px", async ({ page }) => 
   await page.locator(".chat-widget__toggle").click();
   await expect(page.locator(".chat-widget")).toHaveClass(/is-open/);
   await expect(page.locator(".chat-link--telegram")).toBeVisible();
+  await expect(page.locator(".chat-link--max")).toBeVisible();
 
   const layout = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,

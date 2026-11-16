@@ -5,7 +5,7 @@ const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolv
 
 const PRIVACY_PREFERENCES_KEY = "ikautoPrivacyPreferences";
 const PRIVACY_PREFERENCES_VERSION = 1;
-const PERSONAL_DATA_CONSENT_VERSION = "1";
+const PERSONAL_DATA_CONSENT_VERSION = "2";
 
 function readPrivacyPreferences() {
   try {
@@ -209,6 +209,32 @@ chatToggle?.addEventListener("click", () => {
   chatLinks?.setAttribute("aria-hidden", String(!isOpen));
 });
 
+const maxContactNumber = "+7 904 329-49-86";
+const contactToast = document.querySelector("[data-contact-toast]");
+let contactToastTimer;
+
+function showContactToast(message) {
+  if (!contactToast) return;
+  window.clearTimeout(contactToastTimer);
+  contactToast.textContent = message;
+  contactToast.classList.add("is-visible");
+  contactToastTimer = window.setTimeout(() => contactToast.classList.remove("is-visible"), 5000);
+}
+
+document.querySelectorAll("[data-max-contact]").forEach((link) => {
+  link.addEventListener("click", () => {
+    if (!navigator.clipboard?.writeText) {
+      showContactToast(`Найдите в MAX номер ${maxContactNumber}.`);
+      return;
+    }
+
+    navigator.clipboard
+      .writeText(maxContactNumber.replace(/\s/g, ""))
+      .then(() => showContactToast(`Номер ${maxContactNumber} скопирован. Вставьте его в поиск MAX.`))
+      .catch(() => showContactToast(`Найдите в MAX номер ${maxContactNumber}.`));
+  });
+});
+
 const orderModal = document.querySelector("#order-modal");
 const quizModal = document.querySelector("#quiz-modal");
 let activeModal = null;
@@ -356,7 +382,7 @@ window.addEventListener(
   { passive: true },
 );
 
-const formEndpoint = import.meta.env.VITE_FORM_ENDPOINT?.trim();
+const formEndpoint = import.meta.env.VITE_FORM_ENDPOINT?.trim() || "/api/lead.php";
 
 function getPersonalDataConsent(form) {
   return form.querySelector('[data-personal-data-consent], input[name="personalDataConsent"]');
@@ -407,14 +433,17 @@ async function submitLeadForm(form) {
   }
 
   try {
-    if (formEndpoint) {
-      const response = await fetch(formEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    } else throw new Error("FORM_ENDPOINT_NOT_CONFIGURED");
+    const response = await fetch(formEndpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json().catch(() => null);
+    if (!response.ok || result?.ok !== true) throw new Error(result?.error || `HTTP ${response.status}`);
 
     if (status) {
       status.textContent = "Спасибо! Заявка принята, мы свяжемся с вами.";
