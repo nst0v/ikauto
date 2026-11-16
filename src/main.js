@@ -209,32 +209,6 @@ chatToggle?.addEventListener("click", () => {
   chatLinks?.setAttribute("aria-hidden", String(!isOpen));
 });
 
-const maxContactNumber = "+7 904 329-49-86";
-const contactToast = document.querySelector("[data-contact-toast]");
-let contactToastTimer;
-
-function showContactToast(message) {
-  if (!contactToast) return;
-  window.clearTimeout(contactToastTimer);
-  contactToast.textContent = message;
-  contactToast.classList.add("is-visible");
-  contactToastTimer = window.setTimeout(() => contactToast.classList.remove("is-visible"), 5000);
-}
-
-document.querySelectorAll("[data-max-contact]").forEach((link) => {
-  link.addEventListener("click", () => {
-    if (!navigator.clipboard?.writeText) {
-      showContactToast(`Найдите в MAX номер ${maxContactNumber}.`);
-      return;
-    }
-
-    navigator.clipboard
-      .writeText(maxContactNumber.replace(/\s/g, ""))
-      .then(() => showContactToast(`Номер ${maxContactNumber} скопирован. Вставьте его в поиск MAX.`))
-      .catch(() => showContactToast(`Найдите в MAX номер ${maxContactNumber}.`));
-  });
-});
-
 const orderModal = document.querySelector("#order-modal");
 const quizModal = document.querySelector("#quiz-modal");
 let activeModal = null;

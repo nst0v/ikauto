@@ -24,6 +24,8 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test("renders every main section and the original contacts", async ({ page }) => {
   await expect(page).toHaveTitle("Автомобили под заказ");
+  await expect(page.getByText("Индивидуальный подбор каждого автомобиля под Ваш бюджет и задачи.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Записаться на консультацию по подбору авто" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Примеры автомобилей и расчётов" })).toBeVisible();
   await expect(page.locator(".car-card")).toHaveCount(4);
   await expect(page.getByRole("heading", { name: "О проекте" })).toBeAttached();
@@ -47,16 +49,22 @@ test("mobile drawer contains navigation and contact links", async ({ page }) => 
   await expect(drawer).toHaveClass(/is-open/);
   await expect(drawer.getByRole("link", { name: "Отзывы клиентов" })).toBeVisible();
   await expect(drawer.getByRole("link", { name: "Telegram" })).toHaveAttribute("href", "https://t.me/A2carspro");
-  await expect(drawer.locator("[data-max-contact]")).toHaveAttribute("href", "https://max.ru/");
+  await expect(drawer.getByRole("link", { name: "Написать в MAX" })).toHaveAttribute(
+    "href",
+    "https://max.ru/u/f9LHodD0cOLpytfXC8FcIfQ62qAMGxg_-WMXVqBIyzPu2z3QFZVf1UnBtUk",
+  );
   await drawer.getByRole("button", { name: "Закрыть меню" }).click();
   await expect(drawer).not.toHaveClass(/is-open/);
 });
 
 test("MAX and Telegram contacts are available in every contact area", async ({ page }) => {
-  const maxLinks = page.locator("[data-max-contact]");
+  const maxLinks = page.locator('a[href="https://max.ru/u/f9LHodD0cOLpytfXC8FcIfQ62qAMGxg_-WMXVqBIyzPu2z3QFZVf1UnBtUk"]');
   await expect(maxLinks).toHaveCount(4);
   for (let index = 0; index < 4; index += 1) {
-    await expect(maxLinks.nth(index)).toHaveAttribute("href", "https://max.ru/");
+    await expect(maxLinks.nth(index)).toHaveAttribute(
+      "href",
+      "https://max.ru/u/f9LHodD0cOLpytfXC8FcIfQ62qAMGxg_-WMXVqBIyzPu2z3QFZVf1UnBtUk",
+    );
   }
 
   await expect(page.locator('a[href="https://t.me/A2carspro"]')).toHaveCount(4);
@@ -96,7 +104,7 @@ test("lead form requires consent and sends the application to the mail endpoint"
   await form.getByRole("button", { name: "Хочу расчёт стоимости" }).click();
   await expect(form.getByRole("status")).toContainText("Спасибо! Заявка принята");
   expect(leadPayload).toMatchObject({
-    form: "Тест-драйв",
+    form: "Консультация по подбору авто",
     name: "Иван",
     phone: "+79040000000",
     personalDataConsent: true,
