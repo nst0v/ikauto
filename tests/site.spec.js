@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 });
 
 test("renders every main section and the original contacts", async ({ page }) => {
-  await expect(page).toHaveTitle("Автомобили под заказ");
+  await expect(page).toHaveTitle("Автомобили под заказ из Кореи, Японии и Китая — А2авто");
   await expect(page.getByText("Индивидуальный подбор каждого автомобиля под Ваш бюджет и задачи.")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Записаться на консультацию по подбору авто" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Примеры автомобилей и расчётов" })).toBeVisible();

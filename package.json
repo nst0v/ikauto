@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "assets:fetch": "node scripts/fetch-assets.mjs",
+    "seo:notify": "node scripts/notify-indexnow.mjs",
     "test:visual": "playwright test",
     "test:api": "node --test tests/max-bot.test.mjs"
   },
