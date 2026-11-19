@@ -1,21 +1,24 @@
+import { allowAnalytics, trackAcceptedLead } from "./metrika.js";
+
 const countries = ["Кореи", "Китая", "Японии"];
 const typedCountry = document.querySelector(".typed-country");
 
 const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 
 const PRIVACY_PREFERENCES_KEY = "ikautoPrivacyPreferences";
-const PRIVACY_PREFERENCES_VERSION = 1;
+const PRIVACY_PREFERENCES_VERSION = 2;
 const PERSONAL_DATA_CONSENT_VERSION = "2";
 
 function readPrivacyPreferences() {
   try {
     const storedPreferences = JSON.parse(localStorage.getItem(PRIVACY_PREFERENCES_KEY));
     if (
-      storedPreferences?.version === PRIVACY_PREFERENCES_VERSION &&
-      storedPreferences.necessary === true &&
-      typeof storedPreferences.externalMedia === "boolean" &&
-      Date.parse(storedPreferences.expiresAt) > Date.now()
-    ) {
+      storedPreferences?.necessary !== true ||
+      typeof storedPreferences.externalMedia !== "boolean" ||
+      !(Date.parse(storedPreferences.expiresAt) > Date.now())
+    ) return null;
+    if (storedPreferences.version === 1) return { ...storedPreferences, analytics: false };
+    if (storedPreferences.version === PRIVACY_PREFERENCES_VERSION && typeof storedPreferences.analytics === "boolean") {
       return storedPreferences;
     }
   } catch (error) {
@@ -57,6 +60,7 @@ function syncExternalMedia(externalMediaAllowed) {
 const privacyBanner = document.querySelector("[data-privacy-banner]");
 const privacySettings = document.querySelector("[data-privacy-settings]");
 const externalMediaSetting = privacySettings?.querySelector("[data-privacy-external-media]");
+const analyticsSetting = privacySettings?.querySelector("[data-privacy-analytics]");
 
 function showPrivacyBanner(isVisible) {
   setPrivacyElementVisibility(privacyBanner, isVisible);
@@ -70,12 +74,13 @@ function closePrivacySettings() {
 function openPrivacySettings() {
   if (!privacySettings) return;
   if (externalMediaSetting) externalMediaSetting.checked = Boolean(privacyPreferences?.externalMedia);
+  if (analyticsSetting) analyticsSetting.checked = Boolean(privacyPreferences?.analytics);
   setPrivacyElementVisibility(privacySettings, true, "is-open");
   syncBodyLock();
   window.setTimeout(() => externalMediaSetting?.focus({ preventScroll: true }), 40);
 }
 
-function savePrivacyPreferences(externalMedia) {
+function savePrivacyPreferences(externalMedia, analytics) {
   const updatedAt = new Date();
   const expiresAt = new Date(updatedAt);
   expiresAt.setUTCFullYear(expiresAt.getUTCFullYear() + 1);
@@ -83,6 +88,7 @@ function savePrivacyPreferences(externalMedia) {
     version: PRIVACY_PREFERENCES_VERSION,
     necessary: true,
     externalMedia: Boolean(externalMedia),
+    analytics: Boolean(analytics),
     updatedAt: updatedAt.toISOString(),
     expiresAt: expiresAt.toISOString(),
   };
@@ -94,6 +100,7 @@ function savePrivacyPreferences(externalMedia) {
   }
 
   syncExternalMedia(privacyPreferences.externalMedia);
+  allowAnalytics(privacyPreferences.analytics);
   showPrivacyBanner(false);
   closePrivacySettings();
   window.dispatchEvent(
@@ -104,11 +111,11 @@ function savePrivacyPreferences(externalMedia) {
 }
 
 document.querySelectorAll("[data-privacy-accept-all]").forEach((button) => {
-  button.addEventListener("click", () => savePrivacyPreferences(true));
+  button.addEventListener("click", () => savePrivacyPreferences(true, true));
 });
 
 document.querySelectorAll("[data-privacy-reject-optional]").forEach((button) => {
-  button.addEventListener("click", () => savePrivacyPreferences(false));
+  button.addEventListener("click", () => savePrivacyPreferences(false, false));
 });
 
 document.querySelectorAll("[data-privacy-open-settings]").forEach((button) => {
@@ -119,7 +126,7 @@ document.querySelectorAll("[data-privacy-open-settings]").forEach((button) => {
 });
 
 document.querySelectorAll("[data-privacy-save]").forEach((button) => {
-  button.addEventListener("click", () => savePrivacyPreferences(Boolean(externalMediaSetting?.checked)));
+  button.addEventListener("click", () => savePrivacyPreferences(externalMediaSetting?.checked, analyticsSetting?.checked));
 });
 
 document.querySelectorAll("[data-privacy-close]").forEach((button) => {
@@ -127,11 +134,21 @@ document.querySelectorAll("[data-privacy-close]").forEach((button) => {
 });
 
 document.querySelectorAll("[data-enable-external-media]").forEach((button) => {
-  button.addEventListener("click", () => savePrivacyPreferences(true));
+  button.addEventListener("click", () => savePrivacyPreferences(true, privacyPreferences?.analytics));
 });
 
-syncExternalMedia(Boolean(privacyPreferences?.externalMedia));
-showPrivacyBanner(!privacyPreferences);
+function applyStoredPreferences() {
+  syncExternalMedia(Boolean(privacyPreferences?.externalMedia));
+  allowAnalytics(Boolean(privacyPreferences?.analytics));
+  showPrivacyBanner(privacyPreferences?.version !== PRIVACY_PREFERENCES_VERSION);
+}
+
+applyStoredPreferences();
+window.addEventListener("storage", (event) => {
+  if (event.key !== null && event.key !== PRIVACY_PREFERENCES_KEY) return;
+  privacyPreferences = readPrivacyPreferences();
+  applyStoredPreferences();
+});
 
 async function runCountryTyping() {
   if (!typedCountry || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -388,6 +405,7 @@ function validatePersonalDataConsent(form) {
 async function submitLeadForm(form) {
   const status = getFormStatus(form);
   const submitButton = form.querySelector('button[type="submit"]');
+  if (submitButton?.disabled) return;
   const originalText = submitButton?.textContent;
   const payload = Object.fromEntries(new FormData(form).entries());
   if (payload.phone && form.querySelector(".phone-prefix")) payload.phone = `+7 ${payload.phone}`;
@@ -423,6 +441,7 @@ async function submitLeadForm(form) {
       status.textContent = "Спасибо! Заявка принята, мы свяжемся с вами.";
       status.classList.add("is-visible");
     }
+    if (!payload.website) trackAcceptedLead();
     form.reset();
     rangeInputs.forEach(updateRange);
   } catch (error) {

@@ -298,7 +298,7 @@
           <a href="/consent.html">Согласие на обработку персональных данных</a>
           <a href="/cookies.html">Cookie и похожие технологии</a>
           <a href="/terms.html">Правовая информация и условия сайта</a>
-          <button type="button" data-privacy-open-settings>Настройки cookie и видео</button>
+          <button type="button" data-privacy-open-settings>Настройки cookie</button>
         </nav>
         <p class="site-footer__note">Цены и расчёты на сайте носят информационный характер и не являются публичной офертой. Итоговые условия фиксируются в договоре.</p>
       </div>
@@ -441,8 +441,8 @@
 
     <aside class="privacy-banner" data-privacy-banner hidden aria-label="Настройки конфиденциальности">
       <div>
-        <strong>Cookie и внешние видео</strong>
-        <p>Сайт использует обязательное локальное хранилище для работы интерфейса. Видео RUTUBE загружаются только с вашего согласия. Подробнее — в <a href="/cookies.html">политике cookie</a>.</p>
+        <strong>Cookie, аналитика и видео</strong>
+        <p>Сайт использует обязательное локальное хранилище для работы интерфейса. С вашего разрешения мы подключим Яндекс Метрику для оценки рекламы и RUTUBE для показа видео. Подробнее — в <a href="/cookies.html">политике cookie</a>.</p>
       </div>
       <div class="privacy-banner__actions">
         <button type="button" class="button-secondary" data-privacy-reject-optional>Только необходимые</button>
@@ -463,6 +463,10 @@
         <label class="privacy-option privacy-option--switch">
           <div><strong>Внешние видео RUTUBE</strong><p>При включении браузер подключается к RUTUBE, который может обрабатывать технические данные и использовать cookie.</p></div>
           <input type="checkbox" data-privacy-external-media />
+        </label>
+        <label class="privacy-option privacy-option--switch">
+          <div><strong>Яндекс Метрика</strong><p>Помогает узнать, из каких объявлений приходят посетители и сколько заявок они оставляют.</p></div>
+          <input type="checkbox" data-privacy-analytics />
         </label>
         <div class="privacy-settings__actions">
           <button type="button" class="button-secondary" data-privacy-close>Отмена</button>

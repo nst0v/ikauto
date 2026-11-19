@@ -8,7 +8,8 @@ test.beforeEach(async ({ page }, testInfo) => {
     localStorage.setItem(
       "ikautoPrivacyPreferences",
       JSON.stringify({
-        version: 1,
+        version: 2,
+        analytics: false,
         necessary: true,
         externalMedia: false,
         updatedAt: updatedAt.toISOString(),
