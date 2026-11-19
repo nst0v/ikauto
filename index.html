@@ -109,13 +109,13 @@
             <label class="sr-only" for="hero-name">Имя</label>
             <input id="hero-name" name="name" type="text" placeholder="Имя" autocomplete="name" required />
             <label class="sr-only" for="hero-phone">Телефон</label>
-            <input id="hero-phone" name="phone" type="tel" placeholder="Телефон" autocomplete="tel" required />
+            <input id="hero-phone" name="phone" type="tel" inputmode="tel" pattern="[+]?[0-9]{10,15}" maxlength="25" placeholder="Телефон" autocomplete="tel" required />
             <label class="form-consent" for="hero-consent">
               <input id="hero-consent" name="personalDataConsent" value="granted" type="checkbox" required data-personal-data-consent />
               <span>Я даю отдельное <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. Я ознакомился(ась) с <a href="/privacy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</span>
             </label>
             <button type="submit">Хочу расчёт стоимости</button>
-            <p class="form-status" role="status"></p>
+            <p class="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
           </form>
         </div>
       </section>
@@ -269,7 +269,7 @@
               <div class="phone-input">
                 <span class="phone-flag" aria-hidden="true"></span>
                 <span class="phone-prefix" aria-hidden="true">+7</span>
-                <input id="contact-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" required />
+                <input id="contact-phone" name="phone" type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="25" placeholder="(000) 000-00-00" autocomplete="tel-national" required />
               </div>
               <p class="form-hint">Не указывайте в сообщении сведения о здоровье, документах и данные третьих лиц.</p>
               <label class="form-consent" for="contact-consent">
@@ -277,7 +277,7 @@
                 <span>Я даю отдельное <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. Я ознакомился(ась) с <a href="/privacy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</span>
               </label>
               <button type="submit">Связаться</button>
-              <p class="form-status" role="status"></p>
+              <p class="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
             </form>
           </div>
         </div>
@@ -331,7 +331,7 @@
           <div class="phone-input phone-input--outlined">
             <span class="phone-flag" aria-hidden="true"></span>
             <span class="phone-prefix" aria-hidden="true">+7</span>
-            <input id="order-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" required />
+            <input id="order-phone" name="phone" type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="25" placeholder="(000) 000-00-00" autocomplete="tel-national" required />
           </div>
           <label for="order-city">Город, населенный пункт</label>
           <input id="order-city" name="city" type="text" placeholder="Ваш город проживания" required />
@@ -349,7 +349,7 @@
             <span>Я даю отдельное <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. Я ознакомился(ась) с <a href="/privacy.html" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</span>
           </label>
           <button type="submit">Жду звонка</button>
-          <p class="form-status" role="status"></p>
+          <p class="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
         </form>
       </section>
     </div>
@@ -409,7 +409,7 @@
               <div class="phone-input">
                 <span class="phone-flag" aria-hidden="true"></span>
                 <span class="phone-prefix" aria-hidden="true">+7</span>
-                <input id="quiz-phone" name="phone" type="tel" placeholder="(000) 000-00-00" autocomplete="tel" required />
+                <input id="quiz-phone" name="phone" type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="25" placeholder="(000) 000-00-00" autocomplete="tel-national" required />
               </div>
               <label class="form-consent" for="quiz-consent">
                 <input id="quiz-consent" name="personalDataConsent" value="granted" type="checkbox" required data-personal-data-consent />
@@ -434,7 +434,7 @@
             </div>
             <p class="quiz-aside__note">Я пришлю Вам в мессенджер или перезвоню лично</p>
           </aside>
-          <p class="form-status quiz-form-status" role="status"></p>
+          <p class="form-status quiz-form-status" role="status" aria-live="polite" aria-atomic="true"></p>
         </form>
       </section>
     </div>

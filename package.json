@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "assets:fetch": "node scripts/fetch-assets.mjs",
-    "test:visual": "playwright test"
+    "test:visual": "playwright test",
+    "test:api": "node --test tests/max-bot.test.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",

@@ -2,13 +2,14 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests",
+  testMatch: "**/*.spec.js",
   fullyParallel: true,
   timeout: 30_000,
   use: {
     baseURL: "http://127.0.0.1:4173",
-    launchOptions: {
-      executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-    },
+    launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
+      : {},
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },

@@ -288,26 +288,6 @@ rangeInputs.forEach((input) => {
   input.addEventListener("input", () => updateRange(input));
 });
 
-function formatRussianPhone(rawValue) {
-  let digits = rawValue.replace(/\D/g, "");
-  if (digits.startsWith("7") || digits.startsWith("8")) digits = digits.slice(1);
-  digits = digits.slice(0, 10);
-  if (!digits) return "";
-
-  let result = `(${digits.slice(0, 3)}`;
-  if (digits.length >= 3) result += ")";
-  if (digits.length > 3) result += ` ${digits.slice(3, 6)}`;
-  if (digits.length > 6) result += `-${digits.slice(6, 8)}`;
-  if (digits.length > 8) result += `-${digits.slice(8, 10)}`;
-  return result;
-}
-
-document.querySelectorAll('.phone-input input[type="tel"]').forEach((input) => {
-  input.addEventListener("input", () => {
-    input.value = formatRussianPhone(input.value);
-  });
-});
-
 const quizSteps = [...document.querySelectorAll(".quiz-step")];
 const quizProgress = document.querySelector(".quiz-progress span");
 const quizStepLabel = document.querySelector(".quiz-footer__step b");
@@ -383,15 +363,61 @@ function getFormStatus(form) {
   return form.querySelector(".form-status") || document.querySelector(".quiz-form-status");
 }
 
+function setFormStatus(form, message, type = "") {
+  const status = getFormStatus(form);
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle("is-visible", Boolean(message));
+  status.classList.toggle("is-success", type === "success");
+  status.classList.toggle("is-error", type === "error");
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
+}
+
+function hasPhonePrefix(input) {
+  return Boolean(input.closest(".phone-input")?.querySelector(".phone-prefix"));
+}
+
+function sanitizePhone(input) {
+  const rawValue = input.value.trim();
+  let digits = rawValue.replace(/\D/g, "");
+  if (hasPhonePrefix(input)) {
+    if (digits.length === 11 && /^[78]/.test(digits)) digits = digits.slice(1);
+    input.value = digits;
+  } else {
+    input.value = (rawValue.startsWith("+") ? "+" : "") + digits;
+  }
+}
+
+function validatePhone(input, showError = false) {
+  const digits = input.value.replace(/\D/g, "");
+  const valid = hasPhonePrefix(input)
+    ? /^[0-9]{10}$/.test(input.value)
+    : /^\+?[0-9]{10,15}$/.test(input.value);
+  const message = hasPhonePrefix(input)
+    ? "Введите номер телефона: 10 цифр после +7."
+    : "Введите номер телефона: от 10 до 15 цифр, например +7 904 000-00-00.";
+  input.setCustomValidity(valid ? "" : message);
+  if (valid) input.removeAttribute("aria-invalid");
+  if (!valid && showError) {
+    input.setAttribute("aria-invalid", "true");
+    setFormStatus(input.form, message, "error");
+  }
+  return valid && digits.length > 0;
+}
+
+function phoneForPayload(input) {
+  const digits = input.value.replace(/\D/g, "");
+  if (hasPhonePrefix(input) || digits.length === 10) return `+7${digits}`;
+  if (digits.length === 11 && /^[78]/.test(digits)) return `+7${digits.slice(1)}`;
+  return input.value.startsWith("+") ? `+${digits}` : digits;
+}
+
 function validatePersonalDataConsent(form) {
   const consent = getPersonalDataConsent(form);
-  const status = getFormStatus(form);
 
   if (!(consent instanceof HTMLInputElement) || consent.type !== "checkbox") {
-    if (status) {
-      status.textContent = "Отправка недоступна: в форме отсутствует обязательное согласие на обработку персональных данных.";
-      status.classList.add("is-visible");
-    }
+    setFormStatus(form, "Отправка недоступна: в форме отсутствует обязательное согласие на обработку персональных данных.", "error");
     console.error("Lead form is missing a personal-data consent checkbox.", form);
     return false;
   }
@@ -403,12 +429,12 @@ function validatePersonalDataConsent(form) {
 }
 
 async function submitLeadForm(form) {
-  const status = getFormStatus(form);
   const submitButton = form.querySelector('button[type="submit"]');
   if (submitButton?.disabled) return;
   const originalText = submitButton?.textContent;
   const payload = Object.fromEntries(new FormData(form).entries());
-  if (payload.phone && form.querySelector(".phone-prefix")) payload.phone = `+7 ${payload.phone}`;
+  const phoneInput = form.querySelector('input[name="phone"]');
+  if (phoneInput) payload.phone = phoneForPayload(phoneInput);
   payload.personalDataConsent = true;
   payload.consentVersion = PERSONAL_DATA_CONSENT_VERSION;
   payload.consentAt = new Date().toISOString();
@@ -419,11 +445,9 @@ async function submitLeadForm(form) {
     submitButton.disabled = true;
     submitButton.textContent = "Отправляем…";
   }
-  if (status) {
-    status.classList.remove("is-visible");
-    status.textContent = "";
-  }
+  setFormStatus(form, "");
 
+  let responseError = "";
   try {
     const response = await fetch(formEndpoint, {
       method: "POST",
@@ -435,21 +459,21 @@ async function submitLeadForm(form) {
       body: JSON.stringify(payload),
     });
     const result = await response.json().catch(() => null);
+    if (!response.ok && typeof result?.error === "string") responseError = result.error;
     if (!response.ok || result?.ok !== true) throw new Error(result?.error || `HTTP ${response.status}`);
 
-    if (status) {
-      status.textContent = "Спасибо! Заявка принята, мы свяжемся с вами.";
-      status.classList.add("is-visible");
-    }
     if (!payload.website) trackAcceptedLead();
     form.reset();
+    form.querySelectorAll('input[type="tel"]').forEach((input) => {
+      input.setCustomValidity("");
+      input.removeAttribute("aria-invalid");
+    });
+    getPersonalDataConsent(form)?.setCustomValidity("");
     rangeInputs.forEach(updateRange);
+    setFormStatus(form, "Спасибо! Заявка принята, мы свяжемся с вами.", "success");
   } catch (error) {
     console.error(error);
-    if (status) {
-      status.textContent = "Не удалось отправить заявку. Позвоните нам: +7 904 329-49-86.";
-      status.classList.add("is-visible");
-    }
+    setFormStatus(form, responseError || "Не удалось отправить заявку. Позвоните нам: +7 904 329-49-86.", "error");
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
@@ -459,6 +483,18 @@ async function submitLeadForm(form) {
 }
 
 document.querySelectorAll(".lead-form").forEach((form) => {
+  form.addEventListener("input", () => setFormStatus(form, ""), true);
+  form.querySelectorAll('input[type="tel"]').forEach((input) => {
+    input.addEventListener("input", () => {
+      const showError = input.getAttribute("aria-invalid") === "true";
+      sanitizePhone(input);
+      validatePhone(input, showError);
+    });
+    input.addEventListener("blur", () => {
+      if (input.value !== "") validatePhone(input, true);
+    });
+    input.addEventListener("invalid", () => validatePhone(input, true));
+  });
   const consent = getPersonalDataConsent(form);
   if (consent instanceof HTMLInputElement && consent.type === "checkbox") {
     consent.required = true;
@@ -467,6 +503,14 @@ document.querySelectorAll(".lead-form").forEach((form) => {
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    const phoneInput = form.querySelector('input[type="tel"]');
+    if (phoneInput) {
+      sanitizePhone(phoneInput);
+      if (!validatePhone(phoneInput, true)) {
+        phoneInput.reportValidity();
+        return;
+      }
+    }
     if (!validatePersonalDataConsent(form)) return;
     if (!form.reportValidity()) return;
     submitLeadForm(form);

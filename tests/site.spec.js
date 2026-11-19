@@ -127,6 +127,67 @@ test("lead form reports a mail endpoint failure truthfully", async ({ page }) =>
   await form.locator("[data-personal-data-consent]").check();
   await form.getByRole("button", { name: "Хочу расчёт стоимости" }).click();
   await expect(form.getByRole("status")).toContainText("+7 904 329-49-86");
+  await expect(form.getByRole("status")).toHaveClass(/is-error/);
+});
+
+test("hero phone rejects letters and incomplete numbers and confirms only an accepted lead", async ({ page }) => {
+  const payloads = [];
+  let pendingRequest;
+  await page.route("**/api/lead.php", async (route) => {
+    payloads.push(route.request().postDataJSON());
+    pendingRequest = route;
+  });
+
+  const form = page.locator(".hero-form");
+  const phone = form.locator('input[name="phone"]');
+  const status = form.locator(".form-status");
+  const button = form.locator('button[type="submit"]');
+  await form.getByPlaceholder("Имя").fill("Иван");
+  await form.locator("[data-personal-data-consent]").check();
+
+  await phone.fill("тест");
+  await expect(phone).toHaveValue("");
+  await button.click();
+  expect(payloads).toHaveLength(0);
+  await expect(status).toHaveClass(/is-error/);
+  await expect(status).toContainText(/номер|телефон/i);
+
+  await phone.fill("123");
+  await button.click();
+  expect(payloads).toHaveLength(0);
+  expect(await phone.evaluate((input) => input.validity.valid)).toBe(false);
+
+  await phone.fill("+7 (904) 000-00-00");
+  await button.click();
+  await expect.poll(() => payloads.length).toBe(1);
+  await expect(button).toBeDisabled();
+  await expect(status).not.toContainText("Заявка принята");
+  expect(payloads[0]).toMatchObject({ form: "Консультация по подбору авто", phone: "+79040000000" });
+
+  await pendingRequest.fulfill({ status: 200, json: { ok: true } });
+  await expect(status).toContainText("Спасибо! Заявка принята");
+  await expect(status).toHaveClass(/is-success/);
+  await expect(button).toBeEnabled();
+  await expect(phone).toHaveValue("");
+  await expect(form.getByPlaceholder("Имя")).toHaveValue("");
+});
+
+test("contact phone accepts a pasted full number without duplicating the country prefix", async ({ page }) => {
+  let leadPayload;
+  await page.route("**/api/lead.php", async (route) => {
+    leadPayload = route.request().postDataJSON();
+    await route.fulfill({ status: 200, json: { ok: true } });
+  });
+
+  const form = page.locator(".contact-form");
+  await form.getByPlaceholder("Имя").fill("Иван");
+  await form.getByPlaceholder("Сообщение").fill("Нужен расчёт стоимости автомобиля");
+  await form.locator('input[name="phone"]').fill("+7 (904) 000-00-00");
+  await expect(form.locator('input[name="phone"]')).toHaveValue("9040000000");
+  await form.locator("[data-personal-data-consent]").check();
+  await form.locator('button[type="submit"]').click();
+  await expect(form.getByRole("status")).toHaveClass(/is-success/);
+  expect(leadPayload.phone).toBe("+79040000000");
 });
 
 test("mobile layouts have no horizontal overflow", async ({ page }) => {

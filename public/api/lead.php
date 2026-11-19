@@ -32,7 +32,11 @@ function clean_text(array $data, string $key, int $limit, bool $multiline = fals
         $text = preg_replace('/\s+/u', ' ', $text) ?? '';
     }
 
-    return function_exists('mb_substr') ? mb_substr($text, 0, $limit, 'UTF-8') : substr($text, 0, $limit);
+    if (function_exists('mb_substr')) {
+        return mb_substr($text, 0, $limit, 'UTF-8');
+    }
+    preg_match('/^.{0,' . $limit . '}/us', $text, $matches);
+    return $matches[0] ?? '';
 }
 
 function acquire_rate_limit()
@@ -140,8 +144,11 @@ if (!in_array($form, $allowedForms, true)) {
 $name = clean_text($data, 'name', 100);
 $phone = clean_text($data, 'phone', 40);
 $phoneDigits = preg_replace('/\D+/', '', $phone) ?? '';
-if ($name === '' || strlen($phoneDigits) < 10 || strlen($phoneDigits) > 15) {
-    respond(422, ['ok' => false, 'error' => 'Проверьте имя и номер телефона.']);
+if ($name === '') {
+    respond(422, ['ok' => false, 'error' => 'Укажите имя.']);
+}
+if (!preg_match('/^\+?[0-9() -]+$/D', $phone) || strlen($phoneDigits) < 10 || strlen($phoneDigits) > 15) {
+    respond(422, ['ok' => false, 'error' => 'Введите корректный номер телефона: от 10 до 15 цифр.']);
 }
 
 $city = clean_text($data, 'city', 120);
@@ -177,7 +184,6 @@ $rateLimitHandle = acquire_rate_limit();
 $lines = [
     'Новая заявка с сайта ikauto.ru',
     '',
-    'Форма: ' . $form,
     'Имя: ' . $name,
     'Телефон: ' . $phone,
 ];
@@ -200,12 +206,18 @@ if ($message !== '') {
 }
 
 $receivedAt = new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow'));
+$receivedLine = 'Получено: ' . $receivedAt->format('d.m.Y H:i:s') . ' (МСК)';
+$maxLines = $lines;
+$maxLines[] = '';
+$maxLines[] = $receivedLine;
+
+array_splice($lines, 2, 0, ['Форма: ' . $form]);
 $lines[] = '';
 $lines[] = 'Согласие на обработку данных: да';
 $lines[] = 'Версия согласия: ' . ($consentVersion !== '' ? $consentVersion : 'не указана');
 $lines[] = 'Время согласия: ' . ($consentAt !== '' ? $consentAt : 'не указано');
 $lines[] = 'Страница: ' . ($page !== '' ? $page : 'https://ikauto.ru/');
-$lines[] = 'Получено: ' . $receivedAt->format('d.m.Y H:i:s') . ' (МСК)';
+$lines[] = $receivedLine;
 
 $recipient = 'kost_u@mail.ru';
 $subjectText = '[ikauto.ru] Новая заявка — ' . $form;
@@ -221,11 +233,27 @@ $headers = implode("\r\n", [
 ]);
 
 $mailSent = @mail($recipient, $subject, $body, $headers);
-release_rate_limit($rateLimitHandle, $mailSent);
-
 if (!$mailSent) {
     error_log('ikauto lead mail transport failed');
-    respond(502, ['ok' => false, 'error' => 'Почтовый сервис временно недоступен.']);
+}
+
+$maxQueued = false;
+try {
+    require_once __DIR__ . '/max.php';
+    $maxConfig = \Ikauto\Max\config();
+    $maxQueued = \Ikauto\Max\queue($maxConfig, implode("\n", $maxLines));
+    if ($maxQueued) {
+        \Ikauto\Max\flush($maxConfig, 1);
+    }
+} catch (Throwable $error) {
+    error_log('ikauto MAX lead delivery deferred or unavailable: ' . get_class($error));
+}
+
+$accepted = $mailSent || $maxQueued;
+release_rate_limit($rateLimitHandle, $accepted);
+
+if (!$accepted) {
+    respond(502, ['ok' => false, 'error' => 'Сервис заявок временно недоступен.']);
 }
 
 respond(200, ['ok' => true]);
